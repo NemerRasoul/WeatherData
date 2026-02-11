@@ -1,0 +1,14 @@
+C:\Users\nemo2\Desktop\Programmering1\WeatherData2\bin\Debug\net9.0\WeatherData2.exe
+C:\Users\nemo2\Desktop\Programmering1\WeatherData2\bin\Debug\net9.0\WeatherData2.deps.json
+C:\Users\nemo2\Desktop\Programmering1\WeatherData2\bin\Debug\net9.0\WeatherData2.runtimeconfig.json
+C:\Users\nemo2\Desktop\Programmering1\WeatherData2\bin\Debug\net9.0\WeatherData2.dll
+C:\Users\nemo2\Desktop\Programmering1\WeatherData2\bin\Debug\net9.0\WeatherData2.pdb
+C:\Users\nemo2\Desktop\Programmering1\WeatherData2\obj\Debug\net9.0\WeatherData2.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\nemo2\Desktop\Programmering1\WeatherData2\obj\Debug\net9.0\WeatherData2.AssemblyInfoInputs.cache
+C:\Users\nemo2\Desktop\Programmering1\WeatherData2\obj\Debug\net9.0\WeatherData2.AssemblyInfo.cs
+C:\Users\nemo2\Desktop\Programmering1\WeatherData2\obj\Debug\net9.0\WeatherData2.csproj.CoreCompileInputs.cache
+C:\Users\nemo2\Desktop\Programmering1\WeatherData2\obj\Debug\net9.0\WeatherData2.dll
+C:\Users\nemo2\Desktop\Programmering1\WeatherData2\obj\Debug\net9.0\refint\WeatherData2.dll
+C:\Users\nemo2\Desktop\Programmering1\WeatherData2\obj\Debug\net9.0\WeatherData2.pdb
+C:\Users\nemo2\Desktop\Programmering1\WeatherData2\obj\Debug\net9.0\WeatherData2.genruntimeconfig.cache
+C:\Users\nemo2\Desktop\Programmering1\WeatherData2\obj\Debug\net9.0\ref\WeatherData2.dll
