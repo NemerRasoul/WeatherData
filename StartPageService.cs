@@ -10,6 +10,7 @@ namespace WeatherData.Services
     {
         public static string ShowStartPage()
         {
+            Console.Clear();
             Console.WriteLine("Välkommen till väder appen!");
             Console.WriteLine("1. Sök efter datum");
             Console.WriteLine("2. Se statistik");
