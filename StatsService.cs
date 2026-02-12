@@ -23,7 +23,7 @@ namespace WeatherData.Services
                 Console.WriteLine("1. Månadsstatistik");
                 Console.WriteLine("2. Meteorologiska årstider (Höst/Vinter)");
                 Console.WriteLine("3. Sortera Dagar");
-                Console.WriteLine("4. "); // Exportera till textfil
+                Console.WriteLine("4. Generera rapport"); 
                 Console.WriteLine("5. Tillbaka");
 
                 var choice = Console.ReadLine();
@@ -40,7 +40,7 @@ namespace WeatherData.Services
                         ShowSortingMenu();
                         break;
                     case "4":
-                        //
+                        SaveToFileService.SaveWeatherReport(FindMeteorologicalSeasons(FilePath));
                         break;
                     case "5":
                         backToMenu = true;
@@ -108,7 +108,11 @@ namespace WeatherData.Services
                 monthlyStats.Add(stats);
             }
 
+
             return monthlyStats;
+
+            
+
         }
         //Visar meny för val av sortering.
         private static void ShowSortingMenu()
@@ -366,47 +370,60 @@ namespace WeatherData.Services
                 }
             }
 
+            int longestStreak = 0;
+            DateTime? longestStart = null;
+
+            int currentStreak = 0;
+            DateTime? currentStart = null;
+
+            
             //Kollar vinter.
-            for (int i = 0; i < dailyAvgs.Count - 4; i++)
+            for (int i = 0; i < dailyAvgs.Count; i++)
             {
-                var currentDay = dailyAvgs[i];
-                var next5Days = dailyAvgs.Skip(i).Take(5).ToList();
-
-                int month = currentDay.Date.Month;
-                int day = currentDay.Date.Day;
-                //Gör det omöjligt för vintern att börja innan 15e november.
-                bool isValidWinterDate = false;
-                if (month >= 11 && day >= 15)
+                if (dailyAvgs[i].AvgTemp <= 0.0)
                 {
-                    isValidWinterDate = true;
-                }
-                
-
-                if (!isValidWinterDate)
-                    continue;
-
-                //Eftersom vintern alltid har mindre än 0 grader, så får vi ingen vinter 2016, vi ändrade till 5 grader för att få med en väldigt mild vinter.
-                if (next5Days.Count == 5 && next5Days.All(d => d.AvgTemp <= 5.0))
-                {
-                    //Kollar om vintern redan finns inom 30 dagar för att inte ha två vintrar.
-                    
-                    bool alreadyRegistered = seasons.Any(s =>
-                        s.Season == "Mild Vinter" &&
-                        Math.Abs((s.StartDate - currentDay.Date).TotalDays) < 30);
-
-                    if (!alreadyRegistered)
+                    if (currentStreak == 0)
                     {
-                        var avg5Days = next5Days.Average(d => d.AvgTemp);
-                        seasons.Add(new MeteorologicalSeason
+                        currentStart = dailyAvgs[i].Date;
+
+                        currentStreak++;
+
+                        if(currentStreak > longestStreak)
                         {
-                            Season = "Mild Vinter",
-                            StartDate = currentDay.Date,
-                            AvgTemp = avg5Days
-                        });
+                            longestStreak = currentStreak;
+                            longestStart = currentStart;
+                        }
+                    }
+                    else
+                    {
+                        currentStreak = 0;
+                        currentStart = null;
                     }
                 }
             }
+            //Om det finns en streak på 5 dagar i rad får vi vinter.
+            if (longestStart.HasValue)
+            {
+                seasons.Add(new MeteorologicalSeason
+                {
+                    Season = longestStreak >= 5 ? "Vinter" : "Mild Vinter",
+                    StartDate = longestStart.Value,
+                    EndDate = longestStart.Value.AddDays(longestStreak - 1),
+                    DayCount = longestStreak
+                });
 
+            }
+            //Omd det inte blir vinter visar vi den närmaste streaken
+            else if (longestStreak > 0 && longestStart.HasValue)
+            {
+                seasons.Add(new MeteorologicalSeason
+                {
+                    Season = "Mild Vinter",
+                    StartDate = longestStart.Value,
+                    EndDate = longestStart.Value.AddDays(longestStreak - 1),
+                    DayCount = longestStreak
+                });
+            }
             // Beräkna slutdatum och genomsnittstemp för varje säsong. Hittar slutdatum baserat på temperatur och vilken säsong det är.
             foreach (var season in seasons.OrderBy(s => s.StartDate))
             {
@@ -420,7 +437,7 @@ namespace WeatherData.Services
                         var check5Days = dailyAvgs.Skip(i).Take(5).ToList();
 
                         //Om vinternbörjar slutar hösten
-                        if (check5Days.All(d => d.AvgTemp <= 5.0))
+                        if (check5Days.All(d => d.AvgTemp <= 0.0))
                         {
                             season.EndDate = dailyAvgs[i].Date.AddDays(-1);
                             break;
@@ -433,7 +450,7 @@ namespace WeatherData.Services
                         }
                     }
                 }
-                else if (season.Season == "Mild Vinter")
+                else if (season.Season == "Vinter")
                 {
                     //Kollar om temperaturen går över 4 grader i 5 dagar, avslutar vintern.
                     for (int i = seasonStartIndex + 5; i < dailyAvgs.Count - 4; i++)
@@ -489,7 +506,7 @@ namespace WeatherData.Services
             }
 
             var autumns = seasons.Where(s => s.Season == "Höst").ToList();
-            var winters = seasons.Where(s => s.Season == "Mild Vinter").ToList();
+            var winters = seasons.Where(s => s.Season == "Vinter"|| s.Season == "Mild Vinter").ToList();
 
             Console.WriteLine("=== METEOROLOGISKA HÖSTAR ===");
             if (autumns.Any())
@@ -521,8 +538,8 @@ namespace WeatherData.Services
             {
                 foreach (var winter in winters)
                 {
-                    Console.WriteLine($"\nMild Vinter {winter.StartDate.Year}/{winter.StartDate.Year + 1}:");
-                    Console.WriteLine($"  Ankomstdatum: {winter.StartDate:yyyy-MM-dd} (första dygnet av 5 med temp ≤ 4°C)");
+                    Console.WriteLine($"\nVinter {winter.StartDate.Year}/{winter.StartDate.Year + 1}:");
+                    Console.WriteLine($"  Ankomstdatum: {winter.StartDate:yyyy-MM-dd} (första dygnet av 5 med temp ≤ 0°C)");
                     if (winter.EndDate.HasValue)
                     {
                         Console.WriteLine($"  Slutdatum: {winter.EndDate.Value:yyyy-MM-dd}");

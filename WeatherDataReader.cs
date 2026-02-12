@@ -16,7 +16,7 @@ namespace WeatherData
             List<WeatherData> dayData = new List<WeatherData>();
 
             // Pattern: 2016-12-23 03:22:09,Ute,6.5,73
-            string pattern = @"(\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2}),(Ute|Inne),([0-9.]+),(\d+)";
+            string pattern = @"(\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2}),(Ute|Inne),(-?[0-9.]+),(\d+)";
 
             double? outdoorTemp = null;
             double? indoorTemp = null;
@@ -115,7 +115,7 @@ namespace WeatherData
             List<WeatherData> allData = new List<WeatherData>();
 
             // Pattern: 2016-12-23 03:22:09,Ute,6.5,73
-            string pattern = @"(\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2}),(Ute|Inne),([0-9.]+),(\d+)";
+            string pattern = @"(\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2}),(Ute|Inne),(-?[0-9.]+),(\d+)";
 
             double? outdoorTemp = null;
             double? indoorTemp = null;
