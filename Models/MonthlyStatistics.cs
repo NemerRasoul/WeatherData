@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WeatherData
+namespace WeatherData2.Models
 {
     internal class MonthlyStatistics
     {

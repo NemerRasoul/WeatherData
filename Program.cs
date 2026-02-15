@@ -4,9 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using WeatherData.Services;
+using WeatherData2.Services;
 
-namespace WeatherData
+namespace WeatherData2
 {
     internal class Program
     {
@@ -28,7 +28,7 @@ namespace WeatherData
 
                     case "2":
                         Console.Clear();
-                        StatsService.ShowStatistics();
+                        StatsMenuService.ShowStatistics();
                         break;
 
                     case "3":

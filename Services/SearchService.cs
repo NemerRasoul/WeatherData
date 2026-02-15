@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WeatherData2.Data;
+using WeatherData2.Models;
 
-namespace WeatherData.Services
+namespace WeatherData2.Services
 {
     internal class SearchService
     {
-        private const string FilePath = "tempdata5-med fel.txt";
-
+        
         public static void SearchByDate()
         {
             try
@@ -26,7 +27,7 @@ namespace WeatherData.Services
                 DateTime searchDate = new DateTime(year, month, day);
 
                 // Få all väderdata för dagen
-                List<WeatherData> dayData = WeatherDataReader.GetDayWeatherData(FilePath, searchDate);
+                List<WeatherData> dayData = WeatherDataReader.GetDayWeatherData(AppConfig.FilePath, searchDate);
 
                 if (dayData.Count > 0)
                 {
@@ -66,9 +67,9 @@ namespace WeatherData.Services
             Console.WriteLine($"Genomsnitt: {avgMoldRisk:F1}%");
             Console.WriteLine($"Max: {maxMoldRisk:F1}%");
             Console.WriteLine($"Min: {minMoldRisk:F1}%");
-            Console.WriteLine($"\nHög risk (≥80%): {highRiskCount} mätningar ({(highRiskCount * 100.0 / dayData.Count):F1}%)");
-            Console.WriteLine($"Medel risk (10-79%): {mediumRiskCount} mätningar ({(mediumRiskCount * 100.0 / dayData.Count):F1}%)");
-            Console.WriteLine($"Låg risk (<10%): {lowRiskCount} mätningar ({(lowRiskCount * 100.0 / dayData.Count):F1}%)");
+            Console.WriteLine($"\nHög risk (≥80%): {highRiskCount} mätningar ({highRiskCount * 100.0 / dayData.Count:F1}%)");
+            Console.WriteLine($"Medel risk (10-79%): {mediumRiskCount} mätningar ({mediumRiskCount * 100.0 / dayData.Count:F1}%)");
+            Console.WriteLine($"Låg risk (<10%): {lowRiskCount} mätningar ({lowRiskCount * 100.0 / dayData.Count:F1}%)");
 
             Console.WriteLine("\n=== Mögelrisk Ute ===");
             double avgOutdoorMoldRisk = dayData.Average(d => d.OutdoorMoldRisk);
@@ -82,9 +83,9 @@ namespace WeatherData.Services
             Console.WriteLine($"Genomsnitt: {avgOutdoorMoldRisk:F1}%");
             Console.WriteLine($"Max: {maxOutdoorMoldRisk:F1}%");
             Console.WriteLine($"Min: {minOutdoorMoldRisk:F1}%");
-            Console.WriteLine($"\nHög risk (≥80%): {outdoorHighRiskCount} mätningar ({(outdoorHighRiskCount * 100.0 / dayData.Count):F1}%)");
-            Console.WriteLine($"Medel risk (10-79%): {outdoorMediumRiskCount} mätningar ({(outdoorMediumRiskCount * 100.0 / dayData.Count):F1}%)");
-            Console.WriteLine($"Låg risk (<10%): {outdoorLowRiskCount} mätningar ({(outdoorLowRiskCount * 100.0 / dayData.Count):F1}%)");
+            Console.WriteLine($"\nHög risk (≥80%): {outdoorHighRiskCount} mätningar ({outdoorHighRiskCount * 100.0 / dayData.Count:F1}%)");
+            Console.WriteLine($"Medel risk (10-79%): {outdoorMediumRiskCount} mätningar ({outdoorMediumRiskCount * 100.0 / dayData.Count:F1}%)");
+            Console.WriteLine($"Låg risk (<10%): {outdoorLowRiskCount} mätningar ({outdoorLowRiskCount * 100.0 / dayData.Count:F1}%)");
 
             
             Console.WriteLine("\n=== Temperatur & Fuktighet ===");

@@ -4,24 +4,26 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WeatherData
+namespace WeatherData2.Services
 {
     internal class MoldCalc
     {
         public static double MoldCalculator(double temperature, double humidity)
         {
-            // Based on the Swedish mold risk chart
-            // Returns 0-100 where 100 = highest mold risk
-
-            // Too dry zone (För torrt) - below ~78% humidity
+           
+            // För torrt - under 78% humidity
             if (humidity < 78)
             {
-                // Calculate risk from 0% at 0% humidity to ~10% at 78% humidity
-                return Math.Min(10, (humidity / 78.0) * 10);
+                // Kalkylera risk 
+                return Math.Min(10, humidity / 78.0 * 10);
             }
 
-            // Calculate the high risk threshold based on temperature
+            
             double highRiskThreshold;
+
+           // Bestäm gränsen för hög risk beroende på temperatur
+           // ju varmare det är desto lägre luftfuktighet krävs för hög risk
+           
             if (temperature <= 0)
             {
                 highRiskThreshold = 95;
@@ -38,26 +40,26 @@ namespace WeatherData
             {
                 highRiskThreshold = 87;
             }
-            else // temperature > 30
+            else // temperatur > 30
             {
                 highRiskThreshold = 86;
             }
 
-            // If humidity is at or above high risk threshold
+            
             if (humidity >= highRiskThreshold)
             {
-                // Scale from 80% risk at threshold to 100% at 100% humidity
+               
                 double excessHumidity = humidity - highRiskThreshold;
                 double rangeToMax = 100 - highRiskThreshold;
-                double riskIncrease = (excessHumidity / rangeToMax) * 20; // 20% range (80-100%)
+                double riskIncrease = excessHumidity / rangeToMax * 20; // 20% range (80-100%)
                 return Math.Min(100, 80 + riskIncrease);
             }
 
-            // Medium risk zone - between 78% and high risk threshold
-            // Scale from 10% at 78% humidity to 80% at threshold
+            // Medium risk zon - mellan 78% och hög risk 
+           
             double humidityRange = highRiskThreshold - 78;
             double humidityAbove78 = humidity - 78;
-            double riskPercentage = 10 + (humidityAbove78 / humidityRange) * 70; // Scale from 10% to 80%
+            double riskPercentage = 10 + humidityAbove78 / humidityRange * 70; //  10% to 80%
 
             return Math.Min(80, Math.Max(10, riskPercentage));
         }

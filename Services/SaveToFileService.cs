@@ -5,11 +5,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
-using WeatherData.Services;
+using WeatherData2.Services;
+using WeatherData2.Data;
+using WeatherData2.Models;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 
-namespace WeatherData
+namespace WeatherData2.Services
 {
     internal class SaveToFileService
     {
@@ -25,7 +27,7 @@ namespace WeatherData
 
                 string fileName = string.IsNullOrWhiteSpace(customName) ? defaultFileName : customName;
 
-                // Add .txt if not present
+                
                 if (!fileName.EndsWith(".txt"))
                 {
                     fileName += ".txt";
@@ -43,9 +45,7 @@ namespace WeatherData
             Console.Clear();
             Console.WriteLine("Genererar rapport");
 
-            string filePath = "tempdata5-med fel.txt";
-
-            var allData = WeatherDataReader.GetAllWeatherData(filePath);
+            var allData = WeatherDataReader.GetAllWeatherData(AppConfig.FilePath);
             var monthlyData = allData
                  .GroupBy(d => new { d.DateTime.Year, d.DateTime.Month })
                  .OrderBy(g => g.Key.Year)
@@ -80,7 +80,27 @@ namespace WeatherData
             output.AppendLine("=====================");
             output.AppendLine("    Mögelalgoritm    ");
             output.AppendLine("=====================");
-            output.AppendLine("Mögelrisken beräknas mellan tre zoner: torr zon (0–10%), mellanriskzon (10–80%) och högriskzon (80–100%), där gränsen för högrisk beror på temperaturen.");
+            // output.AppendLine("Mögelrisken beräknas mellan tre zoner: torr zon (0–10%), mellanriskzon (10–80%) och högriskzon (80–100%), där gränsen för högrisk beror på temperaturen.");
+            output.AppendLine("Mogelriksen beräknas utifrån relativ luftfuktighet och temperatur");
+            output.AppendLine();
+            output.AppendLine("Algoritmen delar in risken i tre zoner:");
+            output.AppendLine("1. Torr zon (0-10%)");
+            output.AppendLine("- Gäller vid luftfuktighet under 78%");
+            output.AppendLine("- Risken skalas linjärt från 0 till 10%");
+            output.AppendLine();
+            output.AppendLine("2. Mellanriskzon (10-80%)");
+            output.AppendLine("- Gäller mellan 78% och temperaturberoende högriskgräns");
+            output.AppendLine("- Risken ökar linjärt");
+            output.AppendLine();
+            output.AppendLine("3. Högriskzon (80-100%)");
+            output.AppendLine("- Aktiveras när luftfuktigheten passerar högriskgränsen");
+            output.AppendLine("- Ju högre temperatur, desto lägre luftfuktighet krävs för högrisk");
+            output.AppendLine("- Risken skalas linjärt från 80 upp till 100%");
+            output.AppendLine();
+            output.AppendLine("Temperatur påverkan:");
+            output.AppendLine("- Vid högre temperatur krävs lägre luftfuktighet för att mögelrisk ska bli hög.");
+            output.AppendLine("- Vilket betyder att Mögel utvecklas snabbare i varmare miljöer");
+
             Console.WriteLine(output);
             SaveToFile(output.ToString(), "Månadsrapport");
            
